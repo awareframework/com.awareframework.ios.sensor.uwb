@@ -18,7 +18,7 @@ public struct UWBData: BaseDbModelSQLite {
     public var os: String = "iOS"
     public var jsonVersion: Int = 1
 
-    public static let databaseTableName = "uwb"
+    public static let databaseTableName = "ios_uwb"
 
     /// ピアのデバイス識別子（iPhone=UUID文字列、Apple Watch="apple_watch"）
     public var peerIdentifier: String = ""

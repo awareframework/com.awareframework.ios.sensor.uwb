@@ -9,7 +9,7 @@
 //  1. start() → WCSession をアクティベート
 //  2. activate 完了 → NISession を作成してトークンを iPhone へ送信
 //  3. iPhone からトークン受信 → NISession を設定して測距開始
-//  4. 測距データを watch_uwb テーブルへ保存
+//  4. 測距データを watchUWBData テーブルへ保存
 //
 //  他の WCSession 管理クラス（AWWCSessionManager等）と併用する場合
 //  ──────────────────────────────────────────────────
@@ -49,7 +49,7 @@ public class AWUWBSensor: AwareSensor {
 
         public override init() {
             super.init()
-            dbPath      = "watch_uwb"
+            dbPath      = AWUWBData.databaseTableName
             dbTableName = AWUWBData.databaseTableName
         }
 

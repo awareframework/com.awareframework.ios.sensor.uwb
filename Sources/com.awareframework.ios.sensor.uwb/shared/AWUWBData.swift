@@ -3,7 +3,7 @@
 //  com.awareframework.ios.sensor.uwb
 //
 //  Apple Watch 側が保存する UWB 測距データ。
-//  テーブル名: watch_uwb
+//  テーブル名: watchUWBData
 
 import Foundation
 import com_awareframework_ios_core
@@ -18,7 +18,7 @@ public struct AWUWBData: BaseDbModelSQLite {
     public var os: String = "watchOS"
     public var jsonVersion: Int = 1
 
-    public static let databaseTableName = "watch_uwb"
+    public static let databaseTableName = "ios_watch_uwb"
 
     /// 距離（メートル）。未計測時は -1.0
     public var distance: Double = -1.0

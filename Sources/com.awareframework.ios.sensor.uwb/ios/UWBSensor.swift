@@ -69,7 +69,7 @@ public class UWBSensor: AwareSensor {
         public override init() {
             super.init()
             dbPath      = "aware_uwb"
-            dbTableName = "uwb"
+            dbTableName = UWBData.databaseTableName
         }
 
         public override func set(config: Dictionary<String, Any>) {
@@ -104,12 +104,30 @@ public class UWBSensor: AwareSensor {
     public init(_ config: UWBSensor.Config) {
         super.init()
         CONFIG = config
+        configureSyncConfig()
         initializeDbEngine(config: config)
         initializeTable()
     }
 
     public override convenience init() {
         self.init(UWBSensor.Config())
+    }
+
+    private func configureSyncConfig() {
+        super.syncConfig = DbSyncConfig().apply { syncConfig in
+            syncConfig.serverType = CONFIG.serverType
+            syncConfig.debug = CONFIG.debug
+            syncConfig.batchSize = 1000
+            syncConfig.dispatchQueue = DispatchQueue(label: "com.awareframework.ios.sensor.uwb.sync.queue")
+            syncConfig.completionHandler = { [weak self] status, error in
+                guard let self else { return }
+                var userInfo: [String: Any] = [UWBSensor.EXTRA_STATUS: status]
+                if let error {
+                    userInfo[UWBSensor.EXTRA_ERROR] = error
+                }
+                self.notificationCenter.post(name: .actionAwareUWBSyncCompletion, object: self, userInfo: userInfo)
+            }
+        }
     }
 
     // MARK: AwareSensor lifecycle
@@ -139,9 +157,31 @@ public class UWBSensor: AwareSensor {
 
     public override func sync(force: Bool = false) {
         notificationCenter.post(name: .actionAwareUWBSync, object: self)
-        if let engine = dbEngine, let syncConfig = super.syncConfig {
-            engine.startSync(syncConfig)
+        guard let engine = dbEngine else {
+            postSyncFailure("UWB database engine is not initialized.")
+            return
         }
+        guard let syncConfig = super.syncConfig else {
+            postSyncFailure("UWB sync configuration is not initialized.")
+            return
+        }
+        engine.startSync(syncConfig)
+    }
+
+    private func postSyncFailure(_ message: String) {
+        let error = NSError(
+            domain: UWBSensor.TAG,
+            code: -1,
+            userInfo: [NSLocalizedDescriptionKey: message]
+        )
+        notificationCenter.post(
+            name: .actionAwareUWBSyncCompletion,
+            object: self,
+            userInfo: [
+                UWBSensor.EXTRA_STATUS: false,
+                UWBSensor.EXTRA_ERROR: error,
+            ]
+        )
     }
 
     public override func set(label: String) {

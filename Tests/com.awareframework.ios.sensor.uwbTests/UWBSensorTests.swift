@@ -21,7 +21,7 @@ class UWBSensorTests: XCTestCase {
         XCTAssertEqual(data.directionX, 0.0)
         XCTAssertEqual(data.peerDeviceType, "")
         XCTAssertEqual(data.os, "iOS")
-        XCTAssertEqual(UWBData.databaseTableName, "uwb")
+        XCTAssertEqual(UWBData.databaseTableName, "ios_uwb")
     }
 
     func testUWBDataDictionary() {
@@ -69,7 +69,7 @@ class UWBSensorTests: XCTestCase {
         XCTAssertEqual(data.distance, -1.0)
         XCTAssertEqual(data.horizontalAngle, -999.0)
         XCTAssertEqual(data.os, "watchOS")
-        XCTAssertEqual(AWUWBData.databaseTableName, "watch_uwb")
+        XCTAssertEqual(AWUWBData.databaseTableName, "ios_watch_uwb")
     }
 
     func testAWUWBDataDictionary() {
@@ -111,7 +111,7 @@ class UWBSensorTests: XCTestCase {
         XCTAssertTrue(sensor.CONFIG.enableiPhoneRanging)
         XCTAssertTrue(sensor.CONFIG.enableAppleWatchRanging)
         XCTAssertEqual(sensor.CONFIG.dbPath, "aware_uwb")
-        XCTAssertEqual(sensor.CONFIG.dbTableName, "uwb")
+        XCTAssertEqual(sensor.CONFIG.dbTableName, "ios_uwb")
     }
 
     func testConfigApply() {

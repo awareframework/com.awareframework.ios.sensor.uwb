@@ -19,7 +19,7 @@ public struct UWBData: BaseDbModelSQLite {
     public var os: String = "iOS"
     public var jsonVersion: Int = 1
 
-    public static let databaseTableName = "uwb"
+    public static let databaseTableName = "ios_uwb"
 
     /// Identifier of the remote peer (UUID string for iPhones, "apple_watch" for Watch).
     public var peerIdentifier: String = ""
