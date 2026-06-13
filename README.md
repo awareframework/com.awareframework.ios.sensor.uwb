@@ -12,8 +12,8 @@ Ranging data (distance, direction vector, horizontal angle) is recorded for each
 > UWB ranging is available on iPhone 11 and later (U1 chip) and Apple Watch Series 6 and later.
 
 ## Requirements
-iOS 15 or later (iPhone target)  
-watchOS 7 or later (Apple Watch target)
+iOS 16 or later (iPhone target)  
+watchOS 8 or later (Apple Watch target)
 
 ## Installation
 

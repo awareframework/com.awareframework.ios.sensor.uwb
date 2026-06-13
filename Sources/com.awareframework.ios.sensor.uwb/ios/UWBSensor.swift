@@ -65,6 +65,7 @@ public class UWBSensor: AwareSensor {
         public var sensorObserver: UWBObserver?
         public var enableiPhoneRanging: Bool = true
         public var enableAppleWatchRanging: Bool = true
+        public var manageWatchConnectivitySession: Bool = true
 
         public override init() {
             super.init()
@@ -76,6 +77,7 @@ public class UWBSensor: AwareSensor {
             super.set(config: config)
             if let v = config["enableiPhoneRanging"]     as? Bool { enableiPhoneRanging     = v }
             if let v = config["enableAppleWatchRanging"] as? Bool { enableAppleWatchRanging = v }
+            if let v = config["manageWatchConnectivitySession"] as? Bool { manageWatchConnectivitySession = v }
         }
 
         public func apply(closure: (_ config: UWBSensor.Config) -> Void) -> Self {
@@ -242,8 +244,12 @@ public class UWBSensor: AwareSensor {
     private func startWatchConnectivity() {
         guard WCSession.isSupported() else { return }
         let session = WCSession.default
-        session.delegate = self
-        session.activate()
+        if CONFIG.manageWatchConnectivitySession {
+            session.delegate = self
+        }
+        if session.activationState == .notActivated {
+            session.activate()
+        }
         if session.activationState == .activated {
             wcActivated = true
             sendTokenToWatch()
@@ -251,7 +257,10 @@ public class UWBSensor: AwareSensor {
     }
 
     private func sendTokenToWatch() {
-        guard wcActivated, WCSession.default.isWatchAppInstalled else { return }
+        let session = WCSession.default
+        guard (wcActivated || session.activationState == .activated),
+              session.isWatchAppInstalled else { return }
+        wcActivated = true
         sessionQueue.async { [weak self] in
             guard let self else { return }
             let peerKey = "apple_watch"
@@ -270,12 +279,12 @@ public class UWBSensor: AwareSensor {
                 let data = try NSKeyedArchiver.archivedData(withRootObject: myToken,
                                                              requiringSecureCoding: true)
                 let message = ["uwbToken": data]
-                if WCSession.default.isReachable {
-                    WCSession.default.sendMessage(message, replyHandler: nil) { error in
+                if session.isReachable {
+                    session.sendMessage(message, replyHandler: nil) { error in
                         if self.CONFIG.debug { print(UWBSensor.TAG, "WC send failed: \(error)") }
                     }
                 } else {
-                    try WCSession.default.updateApplicationContext(message)
+                    try session.updateApplicationContext(message)
                 }
             } catch {
                 if self.CONFIG.debug { print(UWBSensor.TAG, "WC token archive failed: \(error)") }
