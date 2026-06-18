@@ -34,7 +34,9 @@ public struct AWUWBData: BaseDbModelSQLite {
     public init(_ dict: Dictionary<String, Any>) {
         timestamp       = dict["timestamp"]       as? Int64  ?? 0
         label           = dict["label"]           as? String ?? ""
-        deviceId        = dict["deviceId"]        as? String ?? AwareUtils.getCommonDeviceId()
+        deviceId        = dict["deviceId"]        as? String
+            ?? dict["device_id"] as? String
+            ?? AwareUtils.getCommonDeviceId()
         distance        = dict["distance"]        as? Double ?? -1.0
         directionX      = dict["directionX"]      as? Double ?? 0.0
         directionY      = dict["directionY"]      as? Double ?? 0.0

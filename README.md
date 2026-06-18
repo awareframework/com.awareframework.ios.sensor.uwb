@@ -12,7 +12,7 @@ Ranging data (distance, direction vector, horizontal angle) is recorded for each
 > UWB ranging is available on iPhone 11 and later (U1 chip) and Apple Watch Series 6 and later.
 
 ## Requirements
-iOS 16 or later (iPhone target)  
+iOS 16 or later (iPhone target)
 watchOS 8 or later (Apple Watch target)
 
 ## Installation
@@ -30,7 +30,7 @@ watchOS 8 or later (Apple Watch target)
     * `NSLocalNetworkUsageDescription`
     * `NSBonjourServices`: `_aware-uwb._tcp`, `_aware-uwb._udp`
 
-## Public functions
+## Public Functions
 
 ### UWBSensor
 
@@ -51,12 +51,12 @@ Class to hold the configuration of the sensor.
 + `enableAppleWatchRanging: Bool`: Enable ranging with a paired Apple Watch via WatchConnectivity. (default = `true`)
 + `enabled: Bool`: Sensor is enabled or not. (default = `false`)
 + `debug: Bool`: Enable/disable logging. (default = `false`)
-+ `label: String`: Label for the data. (default = "")
-+ `deviceId: String`: Id of the device associated with the events. (default = "")
-+ `dbEncryptionKey`: Encryption key for the database. (default = `nil`)
-+ `dbType: Engine`: Which db engine to use for saving data. (default = `Engine.DatabaseType.NONE`)
-+ `dbPath: String`: Path of the database. (default = "aware_uwb")
-+ `dbHost: String`: Host for syncing the database. (default = `nil`)
++ `label: String`: Label for the data. (default = `""`)
++ `deviceId: String`: Id of the device associated with the events. (default = `""`)
++ `dbEncryptionKey: String?`: Encryption key for the database. (default = `nil`)
++ `dbType: DatabaseType`: Which db engine to use for saving data. (default = `.none`)
++ `dbPath: String`: Path of the database. (default = `"aware_uwb"`)
++ `dbHost: String?`: Host for syncing the database. (default = `nil`)
 
 ## Broadcasts
 
@@ -93,7 +93,7 @@ Contains a single ranging measurement between the local device and a peer.
 | os              | String | Operating system of the device (iOS)                                     |
 | jsonVersion     | Int    | JSON schema version                                                      |
 
-## Example usage
+## Example Usage
 
 ```swift
 import com_awareframework_ios_sensor_uwb
