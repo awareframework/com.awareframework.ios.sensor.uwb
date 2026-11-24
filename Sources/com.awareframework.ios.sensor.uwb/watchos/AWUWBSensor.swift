@@ -41,6 +41,14 @@ public class AWUWBSensor: AwareSensor {
 
     public var CONFIG = AWUWBSensor.Config()
 
+    private static var isNearbyInteractionSupported: Bool {
+        if #available(watchOS 9.0, *) {
+            return NISession.deviceCapabilities.supportsPreciseDistanceMeasurement
+        } else {
+            return NISession.isSupported
+        }
+    }
+
     public class Config: SensorConfig {
         public var sensorObserver: AWUWBObserver?
         /// true: このセンサーが WCSession を管理する（スタンドアロン動作）
@@ -81,7 +89,7 @@ public class AWUWBSensor: AwareSensor {
     // MARK: AwareSensor lifecycle
 
     public override func start() {
-        guard NISession.isSupported else {
+        guard Self.isNearbyInteractionSupported else {
             if CONFIG.debug { print(AWUWBSensor.TAG, "UWB not supported on this device") }
             return
         }
@@ -136,7 +144,7 @@ public class AWUWBSensor: AwareSensor {
 
     private func initializeNISession() {
         sessionQueue.async { [weak self] in
-            guard let self, NISession.isSupported else { return }
+            guard let self, Self.isNearbyInteractionSupported else { return }
             if self.niSession == nil {
                 let session = NISession()
                 session.delegate = self

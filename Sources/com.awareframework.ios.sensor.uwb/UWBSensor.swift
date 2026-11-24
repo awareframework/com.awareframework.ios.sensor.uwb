@@ -73,6 +73,10 @@ public class UWBSensor: AwareSensor {
 
     public var CONFIG = UWBSensor.Config()
 
+    private static var isNearbyInteractionSupported: Bool {
+        NISession.deviceCapabilities.supportsPreciseDistanceMeasurement
+    }
+
     public class Config: SensorConfig {
         public var sensorObserver: UWBObserver?
         /// Enable iPhone ↔ iPhone ranging via MultipeerConnectivity.
@@ -153,7 +157,7 @@ public class UWBSensor: AwareSensor {
     // MARK: AwareSensor lifecycle
 
     public override func start() {
-        guard NISession.isSupported else {
+        guard Self.isNearbyInteractionSupported else {
             if CONFIG.debug { print(UWBSensor.TAG, "NearbyInteraction not supported on this device") }
             return
         }
@@ -244,7 +248,7 @@ public class UWBSensor: AwareSensor {
     /// sends it to `mcPeer` so the peer can start its own session.
     private func setupNISession(for peerIdentifier: String, mcPeer: MCPeerID) {
         sessionQueue.async { [weak self] in
-            guard let self, NISession.isSupported else { return }
+            guard let self, Self.isNearbyInteractionSupported else { return }
 
             let niSession = NISession()
             niSession.delegate = self
